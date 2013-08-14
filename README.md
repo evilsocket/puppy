@@ -1,4 +1,4 @@
-Puppy
+Puppy [![Gem Version](https://badge.fury.io/rb/puppy.png)](http://badge.fury.io/rb/puppy)
 ========================
 
 Puppy is a tiny gem which will help you to perform easy object tracing and debugging.  
