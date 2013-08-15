@@ -48,7 +48,7 @@ class Object
 	end
 end
 
-module Puppy #:nodoc:
+module Puppy
   # This is the class which encapsulates every object instances once
   # the Object#trace method is invoked.
 	class TracedObject 
@@ -65,24 +65,42 @@ module Puppy #:nodoc:
       :stream => STDERR
 		}
 
-    #:nodoc:
+    # Initializes the traced object instance with the original instance,
+    # options and conditional tracing block.
 		def initialize( obj, opts = {}, &block )
+      @is_puppy_traced = true
 			@object, @opts, @block = obj, DEFAULTS.merge(opts), block
       @stream = @opts[:stream]
 		end
 
-    #:nodoc: We need this to directly use #inspect on the traced object
+    # We need this to directly use #inspect on the traced object
     # without the invocation being traced itself.
     def inspect
       @object.send :inspect
     end
 
-    #:nodoc: Here it goes, trace it baby!
+    # Make the user capable of tracing/untracing the object programmatically
+    # without creating a new TracedObject instance.
+
+    # Enables tracing. 
+    def trace
+      @is_puppy_traced = true
+    end 
+
+    # Disables tracing.
+    def untrace
+      @is_puppy_traced = false
+    end
+
+    # Here it goes, every method invoked on this object will trigger
+    # TracedObject#method_missing since we've undefined every instance
+    # method. This will make us able to print method call and arguments,
+    # and then invoke the original method using Object#send on the
+    # original instance.
 		def method_missing( m, *args )
 			begin
-				if @block == nil || @block.call( @object, m, *args ) == true
+				if ( @block == nil || @block.call( @object, m, *args ) == true ) && @is_puppy_traced == true
           @stream << '# '
-
           @stream << ' ' * caller.size unless !@opts[:indent]
 
           as = @opts[:as]
