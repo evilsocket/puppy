@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{puppy}
-  s.version = '1.0.1'
+  s.version = '1.0.2'
   s.license = "BSD"
 
   s.authors = ["Simone Margaritelli"]
